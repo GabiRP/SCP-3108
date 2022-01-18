@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Discord;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.API.Features.Spawn;
@@ -17,37 +16,18 @@ namespace SCP_3108
 {
     public class Scp3108 : CustomItem
     {
-        public override uint Id { get; set; } = 24;
+        public override uint Id { get; set; } = Plugin.Singleton.Config.ItemId;
         public override string Name { get; set; } = "SCP-3108";
         public override string Description { get; set; } = "The Nerfing Gun";
-        public override float Weight { get; set; } = 1f;
+        public override float Weight { get; set; } = Plugin.Singleton.Config.ItemWeight;
         public override ItemType Type { get; set; } = ItemType.GunRevolver;
-        
-        [Description("The amount of damage SCP-3108 deals to a player")]
-        public float DamageAmount { get; set; } = 60f;
 
-        public List<ItemType> Items { get; set; } = new List<ItemType>()
-        {
-            ItemType.Coin,
-            ItemType.Adrenaline
-        };
+        private Dictionary<Scp3108, uint> TimesShot = new Dictionary<Scp3108, uint>();
 
         public override SpawnProperties SpawnProperties { get; set; } = new SpawnProperties
         {
-            DynamicSpawnPoints = new List<DynamicSpawnPoint>()
-            {
-                new DynamicSpawnPoint()
-                {
-                    Chance = 50,
-                    Location = SpawnLocation.InsideLocker,
-                },
-                new DynamicSpawnPoint()
-                {
-                    Chance = 50,
-                    Location = SpawnLocation.Inside173Bottom
-                }
-            },
-            Limit = 2,
+            DynamicSpawnPoints = Plugin.Singleton.Config.PossibleSpawnPoints,
+            Limit = Plugin.Singleton.Config.ItemLimit,
         };
 
         protected override void SubscribeEvents()
@@ -65,11 +45,15 @@ namespace SCP_3108
         {
             if(!Check(ev.Shooter.CurrentItem)) return;
             ev.IsAllowed = false;
+            if (TimesShot.TryGetValue(this, out uint value))
+            {
+                //Do this
+            }
             if (Physics.Raycast(ev.Shooter.CameraTransform.position, ev.Shooter.CameraTransform.forward, out RaycastHit hit, 500f))
             {
                 var ipb = hit.collider.GetComponentInParent<ItemPickupBase>();
                 if (ipb == null) return;
-                new Item(Items[UnityEngine.Random.Range(0, Items.Count)]).Spawn(ipb.Rb.position, ipb.Rb.rotation);
+                new Item(Plugin.Singleton.Config.ReplacedItems[UnityEngine.Random.Range(0, Plugin.Singleton.Config.ReplacedItems.Count)]).Spawn(ipb.Rb.position, ipb.Rb.rotation);
                 ipb.DestroySelf();
             }
         }
