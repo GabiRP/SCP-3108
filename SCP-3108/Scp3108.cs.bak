@@ -69,6 +69,7 @@ namespace SCP_3108
             {
                 var ipb = hit.collider.GetComponentInParent<ItemPickupBase>();
                 if (ipb == null) return;
+                Log.Debug(ipb.gameObject);
                 new Item(ReplacedItems[UnityEngine.Random.Range(0, ReplacedItems.Count)]).Spawn(ipb.Rb.position, ipb.Rb.rotation);
                 ipb.DestroySelf();
             }
