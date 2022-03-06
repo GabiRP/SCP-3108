@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using Exiled.API.Features;
+using Exiled.CustomItems.API;
 
 namespace SCP_3108
 {
@@ -16,13 +17,14 @@ namespace SCP_3108
         public override void OnEnabled()
         {
             Singleton = this;
-            Config.ItemConfig.TryRegister();
+            Config.LoadItems();
+            Config.ItemConfigs.Scp3108.Register();
             base.OnEnabled();
         }
         public override void OnDisabled()
         {
             Singleton = null;
-            Config.ItemConfig.TryUnregister();
+            Config.ItemConfigs.Scp3108.Unregister();
             base.OnDisabled();
         }
     }

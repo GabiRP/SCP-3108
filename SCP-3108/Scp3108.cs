@@ -7,6 +7,7 @@ using Exiled.API.Features.Items;
 using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API;
 using Exiled.CustomItems.API.Features;
+using Exiled.CustomRoles.API;
 using Exiled.Events.EventArgs;
 using InventorySystem.Items.Pickups;
 using Mirror;
@@ -64,7 +65,6 @@ namespace SCP_3108
         internal void OnShooting(ShootingEventArgs ev)
         {
             if(!Check(ev.Shooter.CurrentItem)) return;
-            
             if (Physics.Raycast(ev.Shooter.CameraTransform.position, ev.Shooter.CameraTransform.forward, out RaycastHit hit, 500f))
             {
                 var ipb = hit.collider.GetComponentInParent<ItemPickupBase>();
